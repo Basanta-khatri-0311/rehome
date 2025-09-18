@@ -1,5 +1,6 @@
 import Header from "../components/Header";
 import ItemCard from "../components/ItemCard";
+import Loader from "../components/Loader"; // import the new loader
 import { useEffect, useState } from "react";
 import axios from "axios"; 
 
@@ -48,7 +49,7 @@ export default function LandingPage() {
         <h2 className="text-3xl font-bold text-indigo-900 mb-6">Items for Sale</h2>
 
         {loading ? (
-          <p className="text-indigo-700 text-center">Loading items...</p>
+          <Loader size={20} /> 
         ) : items.length === 0 ? (
           <p className="text-indigo-700 text-center">No items yet. Be the first to post!</p>
         ) : (
