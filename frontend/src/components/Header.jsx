@@ -14,7 +14,7 @@ export default function Header() {
     "px-4 py-2 rounded-lg bg-white/20 backdrop-blur-md border border-white/30 font-semibold shadow-md transition hover:bg-white/30 hover:scale-105";
 
   return (
-    <header className="flex justify-between items-center py-4 px-8 sticky top-0 z-50
+    <header className="flex justify-between items-center py-4 md:px-8 sticky top-0 z-50
                        bg-white/30 backdrop-blur-md border-b border-white/20 shadow-lg rounded-b-2xl">
       {/* Logo / Branding */}
       <Link to="/" className="flex items-center space-x-2">
