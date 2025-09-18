@@ -44,6 +44,7 @@ export default function Register() {
               value={form[field]}
               onChange={handleChange}
               placeholder={field.charAt(0).toUpperCase()+field.slice(1)}
+              className="focus:ring-green-400"
             />
           ))}
           <Button type="submit" className="w-full bg-green-500 text-white mt-4 hover:bg-green-600">Register</Button>

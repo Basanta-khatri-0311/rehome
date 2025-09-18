@@ -36,8 +36,8 @@ export default function Login() {
         </div>
         <form className="md:w-1/2 p-10" onSubmit={handleSubmit}>
           <h2 className="text-3xl font-bold text-indigo-900 mb-6">Login</h2>
-          <Input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" />
-          <Input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" />
+          <Input name="email" type="email" value={form.email} onChange={handleChange} placeholder="Email" className="focus:ring-indigo-400"/>
+          <Input name="password" type="password" value={form.password} onChange={handleChange} placeholder="Password" className="focus:ring-indigo-400" />
           <Button type="submit" className="w-full bg-indigo-600 text-white mt-4 hover:bg-indigo-700">Login</Button>
           <p className="mt-6 text-indigo-700">
             Don't have an account? <Link to="/register" className="text-green-500 font-semibold hover:underline">Register</Link>

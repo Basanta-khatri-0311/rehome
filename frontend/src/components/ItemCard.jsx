@@ -18,7 +18,7 @@ export default function ItemCard({ item }) {
         <p className="text-sm text-gray-500">Hostel: {item.hostel || "N/A"}</p>
         <Link
           to={`/item/${item._id}`}
-          className="mt-4 block bg-indigo-600 text-white py-2 rounded-lg text-center hover:bg-indigo-700 transition"
+          className="mt-4 block bg-indigo-600 text-white py-2 rounded text-center hover:bg-indigo-700 transition"
         >
           View Details
         </Link>
