@@ -1,71 +1,74 @@
 import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
-import axios from "axios";
 import Header from "../components/Header";
+import ItemCard from "../components/ItemCard";
+import axios from "axios";
 
 export default function ItemDetails() {
   const { id } = useParams();
   const [item, setItem] = useState(null);
-  const [relatedItems, setRelatedItems] = useState([]);
+  const [related, setRelated] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/items/${id}`);
+        const res = await axios.get(`http://localhost:5050/api/items/${id}`);
         setItem(res.data);
 
-        // fetch related items (same category/hostel)
         const relatedRes = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/items?hostel=${res.data.hostel}`
+          `http://localhost:5050/api/items?hostel=${res.data.hostel}&exclude=${id}`
         );
-        // filter out the current item from related
-        setRelatedItems(relatedRes.data.filter((i) => i._id !== id));
+        setRelated(relatedRes.data);
       } catch (err) {
         console.error(err);
       } finally {
         setLoading(false);
       }
     };
-
     fetchItem();
   }, [id]);
 
-  if (loading) return <p className="text-center mt-10">Loading...</p>;
-  if (!item) return <p className="text-center mt-10">Item not found</p>;
+  if (loading) return <p className="text-center text-indigo-700 mt-10">Loading...</p>;
+  if (!item) return <p className="text-center text-red-500 mt-10">Item not found!</p>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-indigo-50 to-indigo-100 font-poppins p-5">
+    <div className="min-h-screen bg-indigo-50 font-poppins p-5">
       <Header />
 
-      <main className="max-w-5xl mx-auto py-10">
-        <div className="flex flex-col md:flex-row gap-8 bg-white p-6 rounded-2xl shadow-xl">
-          <img src={item.image} alt={item.title} className="w-full md:w-1/2 h-96 object-cover rounded-xl" />
-          <div className="md:w-1/2 flex flex-col justify-between">
-            <h1 className="text-4xl font-bold text-indigo-900">{item.title}</h1>
-            <p className="text-gray-700 mt-4">{item.description}</p>
-            <p className="text-indigo-700 font-semibold mt-4 text-2xl">₹{item.price}</p>
-            {item.hostel && <p className="text-gray-500 mt-2">Hostel: {item.hostel}</p>}
-          </div>
+      {/* Main Item Section */}
+      <section className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 mt-10">
+        <div className="md:w-1/2 flex justify-center">
+            <img
+              src={item.image}
+              alt={item.title}
+              className="rounded-xl shadow-lg max-h-[500px] object-contain"
+            />
         </div>
+        <div className="md:w-1/2 flex flex-col justify-center">
+          <h1 className="text-4xl font-bold text-indigo-900 mb-4">{item.title}</h1>
+          <p className="text-indigo-700 text-lg mb-6">{item.description}</p>
+          <p className="text-indigo-800 font-semibold text-2xl mb-2">₹{item.price}</p>
+          {item.hostel && <p className="text-indigo-600 mb-4">Hostel: {item.hostel}</p>}
+          <button className="bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-xl font-semibold transition shadow-lg w-48">
+            Contact Seller
+          </button>
+        </div>
+      </section>
 
-        {relatedItems.length > 0 && (
-          <section className="mt-10">
-            <h2 className="text-3xl font-bold text-indigo-900 mb-6">More from this hostel</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {relatedItems.map((i) => (
-                <Link key={i._id} to={`/item/${i._id}`}>
-                  <div className="bg-white rounded-2xl shadow-lg p-4 flex flex-col hover:shadow-2xl transition">
-                    <img src={i.image} alt={i.title} className="h-48 w-full object-cover rounded-lg mb-4" />
-                    <h3 className="text-lg font-semibold">{i.title}</h3>
-                    <p className="text-indigo-700 mt-2">₹{i.price}</p>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
-      </main>
+      {/* Related Items Section */}
+      {related.length > 0 && (
+        <section className="max-w-7xl mx-auto mt-16">
+          <h2 className="text-2xl font-bold text-indigo-900 mb-6">Related Items</h2>
+          <div className="flex gap-6 overflow-x-auto scrollbar-thin scrollbar-thumb-indigo-400 scrollbar-track-indigo-100 p-2">
+            {related.map((relItem) => (
+              <Link key={relItem._id} to={`/item/${relItem._id}`} className="min-w-[220px]">
+                <ItemCard item={relItem} />
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 }
