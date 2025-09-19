@@ -39,21 +39,33 @@ export default function ItemDetails() {
       {/* Main Item Section */}
       <section className="max-w-6xl mx-auto flex flex-col md:flex-row gap-10 mt-10">
         <div className="md:w-1/2 flex justify-center">
-            <img
-              src={item.image}
-              alt={item.title}
-              className="rounded-xl shadow-lg max-h-[500px] object-contain"
-            />
+          <img
+            src={item.image}
+            alt={item.title}
+            className="rounded-xl shadow-lg max-h-[500px] object-contain"
+          />
         </div>
         <div className="md:w-1/2 flex flex-col justify-center">
           <h1 className="text-4xl font-bold text-indigo-900 mb-4">{item.title}</h1>
           <p className="text-indigo-700 text-lg mb-6">{item.description}</p>
           <p className="text-indigo-800 font-semibold text-2xl mb-2">₹{item.price}</p>
           {item.hostel && <p className="text-indigo-600 mb-4">Hostel: {item.hostel}</p>}
-          <button className="bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded-xl font-semibold transition shadow-lg w-48">
-            Contact Seller
-          </button>
+
+          <div className="flex gap-4">
+            <button className="bg-indigo-600 hover:bg-indigo-700 text-white py-3 px-6 rounded font-semibold transition shadow-lg">
+              Contact Seller
+            </button>
+
+            {/* BUY button */}
+            <Link
+              to={`/buy/${item._id}`}
+              className="bg-green-600 hover:bg-green-700 text-white py-3 px-6 rounded font-semibold transition shadow-lg"
+            >
+              Buy Now
+            </Link>
+          </div>
         </div>
+
       </section>
 
       {/* Related Items Section */}

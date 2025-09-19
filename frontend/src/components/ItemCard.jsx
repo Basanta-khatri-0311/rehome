@@ -16,12 +16,22 @@ export default function ItemCard({ item }) {
         <p className="text-gray-700 mb-2">{item.description}</p>
         <p className="font-semibold mb-1 text-indigo-700">Price: ₹{item.price}</p>
         <p className="text-sm text-gray-500">Hostel: {item.hostel || "N/A"}</p>
-        <Link
-          to={`/item/${item._id}`}
-          className="mt-4 block bg-indigo-600 text-white py-2 rounded text-center hover:bg-indigo-700 transition"
-        >
-          View Details
-        </Link>
+        <div className="mt-4 flex flex-col sm:flex-row gap-3">
+          <Link
+            to={`/item/${item._id}`}
+            className="flex-1 bg-indigo-600 text-white py-2 rounded text-center hover:bg-indigo-700 transition"
+          >
+            View Details
+          </Link>
+
+          <Link
+            to={`/buy/${item._id}`}
+            className="flex-1 bg-green-600 text-white py-2 rounded text-center hover:bg-green-700 transition"
+          >
+            Buy Now
+          </Link>
+        </div>
+
       </div>
     </div>
   );
