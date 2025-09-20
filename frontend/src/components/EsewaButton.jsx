@@ -1,24 +1,25 @@
 import axios from "axios";
 
 export default function EsewaButton({ amount, orderId }) {
-  const handleEsewaPayment = async () => {
-    const merchantCode = "YOUR_MERCHANT_CODE";
+  const handleEsewaPayment = () => {
+    const merchantCode = "YOUR_MERCHANT_CODE"; // from eSewa account
     const totalAmount = amount;
 
-    const successUrl = `http://localhost:3000/payment-success?orderId=${orderId}&amount=${totalAmount}`;
-    const failureUrl = `http://localhost:3000/payment-failure`;
+    const successUrl = `${import.meta.env.VITE_API_URL}/api/orders/${orderId}/verify-esewa`;
+    const failureUrl = "http://localhost:5173/payment-failure"; // frontend failure page
 
     const url = `https://esewa.com.np/epay/main?amt=${totalAmount}&pdc=&psc=&txAmt=0&tAmt=${totalAmount}&pid=${orderId}&scd=${merchantCode}&su=${successUrl}&fu=${failureUrl}`;
 
+    // redirect to eSewa payment page
     window.location.href = url;
   };
 
   return (
     <button
-      className="flex-1 p-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+      className="flex-1 p-3 rounded-lg bg-blue-600 text-white hover:bg-blue-700 transition"
       onClick={handleEsewaPayment}
     >
-      eSewa
+      Pay with eSewa
     </button>
   );
 }

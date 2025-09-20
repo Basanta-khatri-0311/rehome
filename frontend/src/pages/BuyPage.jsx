@@ -13,7 +13,7 @@ export default function BuyPage() {
   useEffect(() => {
     const fetchItem = async () => {
       try {
-        const res = await axios.get(`http://localhost:5050/api/items/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/items/${id}`);
         setItem(res.data);
       } catch (err) {
         console.error(err);
@@ -24,16 +24,17 @@ export default function BuyPage() {
     fetchItem();
   }, [id]);
 
-  const handleOrder = async () => {
+  const handleCreateOrder = async () => {
     if (!selectedPayment) return alert("Select a payment method!");
+
     try {
-      const res = await axios.post(`http://localhost:5050/api/orders/${id}`, {
-        paymentMethod: selectedPayment
-      }, {
-        headers: { Authorization: `Bearer ${localStorage.getItem("token")}` }
-      });
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/api/orders/${id}`,
+        { paymentMethod: selectedPayment },
+        { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+      );
       setOrder(res.data);
-      alert("Order created! Proceed to payment.");
+      alert("Order created! Proceed to payment below.");
     } catch (err) {
       console.error(err);
       alert("Order creation failed!");
@@ -60,23 +61,42 @@ export default function BuyPage() {
           <div>
             <h1 className="text-3xl font-bold mb-4">{item.title}</h1>
             <p className="text-gray-700 mb-2">{item.description}</p>
-            <p className="font-semibold mb-4 text-indigo-800 text-2xl">Price: ₹{item.price}</p>
+            <p className="font-semibold mb-4 text-indigo-800 text-2xl">
+              Price: ₹{item.price}
+            </p>
             {item.hostel && <p className="text-gray-500 mb-4">Hostel: {item.hostel}</p>}
           </div>
 
-          <PaymentOptions
-            amount={item.price}
-            orderId={order?._id || id} // use existing order or item id temporarily
-            selectedPayment={selectedPayment}
-            setSelectedPayment={setSelectedPayment}
-          />
+          {/* Payment Method Selection */}
+          {!order && (
+            <PaymentOptions
+              amount={item.price}
+              selectedPayment={selectedPayment}
+              setSelectedPayment={setSelectedPayment}
+            />
+          )}
 
-          <button
-            className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold mt-4"
-            onClick={handleOrder}
-          >
-            Create Order / Proceed
-          </button>
+          {/* Create Order Button */}
+          {!order && (
+            <button
+              className="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-lg font-semibold mt-4"
+              onClick={handleCreateOrder}
+            >
+              Create Order / Proceed
+            </button>
+          )}
+
+          {/* Online Payment Buttons after order is created */}
+          {order && selectedPayment !== "cod" && (
+            <PaymentOptions amount={item.price} orderId={order._id} />
+          )}
+
+          {/* COD Message */}
+          {order && selectedPayment === "cod" && (
+            <p className="mt-4 text-green-700 font-semibold">
+              Order created successfully! Pay on delivery.
+            </p>
+          )}
         </div>
       </div>
     </div>

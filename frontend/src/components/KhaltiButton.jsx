@@ -5,41 +5,47 @@ export default function KhaltiButton({ amount, orderId }) {
   const config = {
     publicKey: "YOUR_KHALTI_PUBLIC_KEY",
     productIdentity: orderId,
-    productName: "Marketplace Payment",
-    productUrl: "http://localhost:3000",
+    productName: "Student Marketplace Payment",
+    productUrl: "http://localhost:5173",
     eventHandler: {
-      async onSuccess(payload) {
+      onSuccess: async (payload) => {
         try {
-          await axios.post(`http://localhost:5050/api/orders/${orderId}/verify-khalti`, {
-            token: payload.token,
-            amount: payload.amount / 100
-          });
-          alert("Payment successful and verified!");
-        } catch {
+          // Send token to backend to verify payment
+          const res = await axios.post(
+            `${import.meta.env.VITE_API_URL}/api/orders/${orderId}/verify-khalti`,
+            {
+              token: payload.token,
+              amount: amount,
+            },
+            { headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+          );
+          alert("Payment successful!");
+        } catch (err) {
+          console.error(err);
           alert("Payment verification failed!");
         }
       },
-      onError(error) {
+      onError: (error) => {
         console.error("Khalti Payment Error", error);
         alert("Payment failed!");
       },
-      onClose() {
-        console.log("Khalti widget closed");
-      },
+      onClose: () => console.log("Khalti widget closed"),
     },
     paymentPreference: ["KHALTI", "EBANKING", "MOBILE_BANKING", "CONNECT_IPS", "SCT"],
   };
 
   const checkout = new KhaltiCheckout(config);
 
-  const handleKhaltiPayment = () => checkout.show({ amount: amount * 100 });
+  const handleKhaltiPayment = () => {
+    checkout.show({ amount: amount * 100 }); // Khalti expects paisa
+  };
 
   return (
     <button
-      className="flex-1 p-3 rounded-lg bg-indigo-600 text-white hover:bg-indigo-700 transition"
+      className="flex-1 p-3 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition"
       onClick={handleKhaltiPayment}
     >
-      Khalti
+      Pay with Khalti
     </button>
   );
 }
